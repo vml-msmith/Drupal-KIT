@@ -1,0 +1,82 @@
+name: DrupalKIT
+recipe: drupal9
+excludes:
+  - drush
+  - node_modules
+  - source/node_modules
+  - docroot/core
+  - docroot/modules/contrib
+  - vendor
+config:
+  php: '7.4'
+  webroot: docroot
+  composer_version: 2
+services:
+  appserver:
+    composer_version: 2
+    build:
+      - composer global require drupal/coder
+      - >-
+        /var/www/.composer/vendor/bin/phpcs --config-set installed_paths
+        /var/www/.composer/vendor/drupal/coder/coder_sniffer
+      - composer install
+      - ln -s hooks/pre-commit.lando .git/hooks/pre-commit
+    xdebug: true
+    config:
+      php: .vscode/php.ini
+    overrides:
+      environment:
+        XDEBUG_MODE: null
+  node:
+    type: node
+    build:
+      -  >-
+        cd source
+        npm install
+      - npm install -G gulp
+tooling:
+  node:
+    service: node
+    dir: /app/source/
+  npm:
+    service: node
+    dir: /app/source/
+  gulp:
+    service: node
+    dir: /app/source/
+  xdebug-on:
+    service: appserver
+    description: Enable xdebug for Apache.
+    cmd: >-
+      docker-php-ext-enable xdebug && /etc/init.d/apache2 reload && echo
+      "Enabling xdebug"
+    user: root
+  xdebug-off:
+    service: appserver
+    description: Disable xdebug for Apache.
+    cmd: >-
+      rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini &&
+      /etc/init.d/apache2 reload && echo "Disabling xdebug"
+    user: root
+  drupalcs:
+    service: appserver
+    cmd: >-
+      /var/.composer/vendor/bin/phpcs --standard=Drupal,DrupalPractice
+      --extensions=php,module,inc,install,test,profile,theme
+      --ignore=*.pages*.inc,*.yml,.docksal,*.js,*.jpg,*.png,settings.php,*.woff,*.eot,*.ttf,*.otf,*.woff2
+    description: Run phpcs Drupal Coding Standards against a given file or directory.
+  drupalcbf:
+    service: appserver
+    cmd: /var/.composer/vendor/bin/phpcbf --standard=Drupal
+    description: Automatically fix Drupal coding standards suggestions.
+  phpunit:
+    service: appserver
+    cmd: vendor/bin/phpunit --configuration web/core
+    description: Run PHPUnit tests on a specific file or Drupal module.
+  drupal-check:
+    service: appserver
+    cmd: vendor/bin/drupal-check -ad
+    description: Check Drupal code for deprecations and discover bugs via static analysis.
+  unittest:
+    service: appserver
+    cmd: php /app/vendor/bin/phpunit -c /app/phpunit.xml
