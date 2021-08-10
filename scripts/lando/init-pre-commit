@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+## Initialize Project
+##
+## Usage: fin init
+
+
+#-------------------------- BEGIN: Helper functions --------------------------------
+SCRIPT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT=${PROJECT_ROOT:-"${SCRIPT_PATH}/../../"}
+source "${SCRIPT_PATH}/functions.sh"
+
+SYSTEM="lando"
+
+header "Project initialization"
+section=Initialization
+step=1
+
+# Add pre-commit hook
+step_header "Creating git pre-commit"
+if [[ "$RUN_AS_CI" = "true" ]]; then
+  echo-yellow "Skipping – in CI mode."
+else
+  PRE_COMMIT_PATH="${PROJECT_ROOT}/hooks/pre-commit"
+
+  if [[ "$SYSTEM" = "lando" ]]; then
+    PRE_COMMIT_PATH="${PRE_COMMIT_PATH}.lando"
+  fi
+
+  GIT_DIRECTORY_PATH="${PROJECT_ROOT}/.git"
+  GIT_HOOKS_PATH="${GIT_DIRECTORY_PATH}/hooks"
+  GIT_PRE_COMMIT_PATH="${GIT_HOOKS_PATH}/pre-commit"
+  echo "${GIT_PRE_COMMIT_PATH}"
+  if [[ -d $GIT_DIRECTORY_PATH ]]; then
+
+    if [[ ! -d $GIT_HOOKS_PATH ]]; then
+      mkdir "$GIT_HOOKS_PATH"
+    fi
+
+    if [[ ! -d $GIT_HOOKS_PATH ]]; then
+      echo-yellow "Skipping – .git/hooks directory could not be created."
+    elif [[ -f $GIT_PRE_COMMIT_PATH ]]; then
+      echo-yellow "Skipping – pre-commit already set"
+    elif [[ ! -f $PRE_COMMIT_PATH ]]; then
+      echo-yellow "Skipping – source pre-commit file missing."
+    else
+      ln -s $PRE_COMMIT_PATH $GIT_PRE_COMMIT_PATH
+      echo-yellow "Pre-commit file created."
+
+    fi
+  else
+    echo-yellow "Skipping – .git directory missing."
+  fi
+fi

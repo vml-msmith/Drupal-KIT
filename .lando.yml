@@ -13,6 +13,8 @@ config:
   composer_version: 2
 services:
   appserver:
+    environment:
+      IS_LANDO: true
     composer_version: 2
     build:
       - composer global require drupal/coder
@@ -29,11 +31,12 @@ services:
         XDEBUG_MODE: null
   node:
     type: node
+    globals:
+      gulp-cli: latest
     build:
       -  >-
         cd source
         npm install
-      - npm install -G gulp
 tooling:
   node:
     service: node
@@ -80,3 +83,6 @@ tooling:
   unittest:
     service: appserver
     cmd: php /app/vendor/bin/phpunit -c /app/phpunit.xml
+  kit/init:
+    service: appserver
+    cmd: bash /app/scripts/lando/init-pre-commit
