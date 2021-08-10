@@ -29,7 +29,10 @@ EOF
     exit 1
 fi
 
-PROJECT=`php -r "echo dirname(dirname(realpath('$0')));"`
+SCRIPT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT=${PROJECT_ROOT:-"${SCRIPT_PATH}/../../"}
+PROJECt=PROJECT_ROOT
+#PROJECT=`php -r "echo dirname(dirname(realpath('$0')));"`
 PROJECT=$(sed 's/ /\\ /g' <<< "$PROJECT");
 
 
@@ -51,7 +54,7 @@ fi
 
 if [ -n "$STAGED_FILES" ]
 then
-  lando kit-lint ${STAGED_FILES}
+  lando kit/lint ${STAGED_FILES}
 fi
 
 exit $?

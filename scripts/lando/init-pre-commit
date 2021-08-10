@@ -39,13 +39,17 @@ else
 
     if [[ ! -d $GIT_HOOKS_PATH ]]; then
       echo-yellow "Skipping – .git/hooks directory could not be created."
-    elif [[ -f $GIT_PRE_COMMIT_PATH ]]; then
-      echo-yellow "Skipping – pre-commit already set"
     elif [[ ! -f $PRE_COMMIT_PATH ]]; then
       echo-yellow "Skipping – source pre-commit file missing."
     else
-      ln -s $PRE_COMMIT_PATH $GIT_PRE_COMMIT_PATH
-      echo-yellow "Pre-commit file created."
+      if [[ -f $GIT_PRE_COMMIT_PATH ]]; then\
+        echo-yellow "Pre-commit already exists. Overwriting."
+        rm $GIT_PRE_COMMIT_PATH
+        cp $PRE_COMMIT_PATH $GIT_PRE_COMMIT_PATH
+      else
+        cp $PRE_COMMIT_PATH $GIT_PRE_COMMIT_PATH
+        echo-yellow "Pre-commit file created."
+      fi
 
     fi
   else

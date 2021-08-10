@@ -14,7 +14,7 @@ config:
 services:
   appserver:
     environment:
-      IS_LANDO: true
+      IS_LANDO: 1
     composer_version: 2
     build:
       - composer global require drupal/coder
@@ -22,7 +22,6 @@ services:
         /var/www/.composer/vendor/bin/phpcs --config-set installed_paths
         /var/www/.composer/vendor/drupal/coder/coder_sniffer
       - composer install
-      - ln -s hooks/pre-commit.lando .git/hooks/pre-commit
     xdebug: true
     config:
       php: .vscode/php.ini
@@ -64,7 +63,7 @@ tooling:
   drupalcs:
     service: appserver
     cmd: >-
-      /var/.composer/vendor/bin/phpcs --standard=Drupal,DrupalPractice
+      /var/www/.composer/vendor/bin/phpcs --standard=Drupal,DrupalPractice
       --extensions=php,module,inc,install,test,profile,theme
       --ignore=*.pages*.inc,*.yml,.docksal,*.js,*.jpg,*.png,settings.php,*.woff,*.eot,*.ttf,*.otf,*.woff2
     description: Run phpcs Drupal Coding Standards against a given file or directory.
@@ -86,3 +85,9 @@ tooling:
   kit/init:
     service: appserver
     cmd: bash /app/scripts/lando/init-pre-commit
+  kit/lint:
+    service: appserver
+    cmd: >-
+      /var/www/.composer/vendor/bin/phpcs --standard=Drupal,DrupalPractice
+      --extensions=php,module,inc,install,test,profile,theme
+      --ignore=*.pages*.inc,*.yml,.docksal,*.js,*.jpg,*.png,settings.php,*.woff,*.eot,*.ttf,*.otf,*.woff2
