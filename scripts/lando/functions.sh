@@ -75,3 +75,5 @@ in_array () {
 run_command () {
   "${DOCKSAL_COMMANDS_PATH}/$@"
 }
+
+COMMAND_DRUSH="drush"

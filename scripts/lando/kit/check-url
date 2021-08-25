@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+#: exec_target = cli
+
+## Check response status on a list of urls.
+##
+## Usage: fin kit/check-url <args>
+
+#-------------------------- BEGIN: Execution --------------------------------
+cd ${PROJECT_ROOT}/${DOCROOT}
+drush kit:check-url "$@"
+#-------------------------- CLOSE: Execution --------------------------------

@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+## Initialize docksal site databases based on drush aliases
+##
+## Usage: fin kit/init-db
+
+#-------------------------- BEGIN: Execution --------------------------------
+
+cd ${PROJECT_ROOT}/${DOCROOT}
+SITES=$(fin drush sa --format=list | tr -d '\@:\r\'\' | sed -e 's/\..*$//' | sort | uniq)
+cd ${PROJECT_ROOT}
+
+for SITE in $SITES; do
+  if ! fin db ls | grep -q $SITE ; then
+    fin db create $SITE > /dev/null 2>&1
+  fi
+
+  fin db cli GRANT ALL ON $SITE.* TO 'user' > /dev/null 2>&1
+done
+
+# Blank echo as a temporary fix for this command to not cause 'fin init' to exit immediately after running it.
+echo ""
+
+#-------------------------- CLOSE: Execution --------------------------------

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+#: exec_target = cli
+
+## Run npm in the theme source directory
+##
+## Usage: fin kit/npm <args>
+
+#-------------------------- BEGIN: Execution --------------------------------
+cd ${PROJECT_ROOT}/source
+npm "$@"
+#-------------------------- CLOSE: Execution --------------------------------

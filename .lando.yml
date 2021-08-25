@@ -84,7 +84,10 @@ tooling:
     cmd: php /app/vendor/bin/phpunit -c /app/phpunit.xml
   kit/init:
     service: appserver
-    cmd: bash /app/scripts/lando/init-pre-commit
+    cmd: 
+      - appserver: bash /app/scripts/lando/init-pre-commit
+      - appserver: bash /app/scripts/lando/init-composer
+      - node: cd /app/source && npm install
   kit/lint:
     service: appserver
     cmd: >-

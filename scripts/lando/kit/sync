@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+#: exec_target = cli
+
+## Sync local environment with most recent code, database, and configuration.
+##
+## Usage: fin kit/conf <args>
+
+#-------------------------- Execution --------------------------------
+cd ${PROJECT_ROOT}/${DOCROOT}
+drush kit:sync "$@"
+#-------------------------- END: Execution --------------------------------

@@ -31,8 +31,7 @@ fi
 
 SCRIPT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_ROOT=${PROJECT_ROOT:-"${SCRIPT_PATH}/../../"}
-PROJECt=PROJECT_ROOT
-#PROJECT=`php -r "echo dirname(dirname(realpath('$0')));"`
+PROJECT=PROJECT_ROOT
 PROJECT=$(sed 's/ /\\ /g' <<< "$PROJECT");
 
 

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+#: exec_target = cli
+
+## Import/export environment specific configuration for a site
+##
+## Usage: fin kit/conf <args>
+
+#-------------------------- Execution --------------------------------
+cd ${PROJECT_ROOT}/${DOCROOT}
+drush kit:theme "$@"
+#-------------------------- END: Execution --------------------------------
